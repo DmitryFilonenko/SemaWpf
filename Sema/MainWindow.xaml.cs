@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sema.FsLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,11 +24,17 @@ namespace Sema
         public MainWindow()
         {
             InitializeComponent();
+            Start();
+        }
+
+        private void Start()
+        {
+            string tableName = ManagerFs.GetTableNameFromCtl();
+            MessageBox.Show(tableName);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             Sema.DataSet1 dataSet1 = ((Sema.DataSet1)(this.FindResource("dataSet1")));
             // Load data into the table SEMAPHORE. You can modify this code as needed.
             Sema.DataSet1TableAdapters.SEMAPHORETableAdapter dataSet1SEMAPHORETableAdapter = new Sema.DataSet1TableAdapters.SEMAPHORETableAdapter();
