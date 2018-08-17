@@ -25,25 +25,46 @@ namespace Sema
     {
         public MainWindow()
         {
-            InitializeComponent();
-            Start();
+            InitializeComponent();            
         }
 
-        private void Start()
+        private void CheckAndUpdateState()
         {
             string tableName = ManagerFs.GetTableNameFromCtl();
-            //MessageBox.Show(tableName);
-            bool isTableFree = ManagerDb.IsTableFree(tableName); 
+            bool isTableFree = ManagerDb.IsTableFree(tableName);
+            if (isTableFree)
+            {
+                ManagerDb.InsertToTable(tableName);
+            }
+            else
+            {
+                //
+                //if(отбираем)
+                //{
+                //    update
+                //}
+                //else
+                //{
+                //    отбой
+                //}
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            CheckAndUpdateState();
+
             Sema.DataSet1 dataSet1 = ((Sema.DataSet1)(this.FindResource("dataSet1")));
             // Load data into the table SEMAPHORE. You can modify this code as needed.
             Sema.DataSet1TableAdapters.SEMAPHORETableAdapter dataSet1SEMAPHORETableAdapter = new Sema.DataSet1TableAdapters.SEMAPHORETableAdapter();
             dataSet1SEMAPHORETableAdapter.Fill(dataSet1.SEMAPHORE);
             System.Windows.Data.CollectionViewSource sEMAPHOREViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("sEMAPHOREViewSource")));
             sEMAPHOREViewSource.View.MoveCurrentToFirst();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ManagerDb.DeleteFromTable();
         }
     }
 }
