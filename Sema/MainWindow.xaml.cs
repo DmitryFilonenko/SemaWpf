@@ -1,4 +1,6 @@
-﻿using Sema.FsLayer;
+﻿using Sema.DbLayer;
+using Sema.DbLayer.Manager;
+using Sema.FsLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +32,8 @@ namespace Sema
         private void Start()
         {
             string tableName = ManagerFs.GetTableNameFromCtl();
-            MessageBox.Show(tableName);
+            //MessageBox.Show(tableName);
+            bool isTableFree = ManagerDb.IsTableFree(tableName); 
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
