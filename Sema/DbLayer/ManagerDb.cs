@@ -1,8 +1,9 @@
-﻿using Sema.DbLayer.Manager;
+﻿using Oracle.ManagedDataAccess.Client;
+using Sema.DbLayer.Manager;
 using Sema.Mediator;
 using System;
 using System.Collections.Generic;
-using System.Data.OracleClient;
+//using System.Data.OracleClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,8 @@ namespace Sema.DbLayer
         {
             try
             {
-                _con = new OracleConnection("Data Source = CD_WORK; User ID = IMPORT_USER; Password = sT7hk9Lm; Unicode = True");
+                string connectStr = Properties.Settings.Default.ConnectionString;
+                _con = new OracleConnection(connectStr);
                 _con.Open();
             }
             catch (Exception)
