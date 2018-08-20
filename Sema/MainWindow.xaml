@@ -5,20 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sema"
         mc:Ignorable="d"
-        Title="Semaphore" Height="300" Width="450" Loaded="Window_Loaded" Closing="Window_Closing">
-    <!--Icon="Resources/Icon1.ico"-->
+        Title="{Binding TableName}" Height="360" Width="530" Closing="Window_Closing" Activated="Window_Activated">
+
     <Window.Resources>
         <local:DataSet1 x:Key="dataSet1"/>
         <CollectionViewSource x:Key="sEMAPHOREViewSource" Source="{Binding SEMAPHORE, Source={StaticResource dataSet1}}"/>
     </Window.Resources>
-    <Grid DataContext="{StaticResource sEMAPHOREViewSource}" Margin="10">
-        <DataGrid x:Name="sEMAPHOREDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" Margin="10,10,10,10" RowDetailsVisibilityMode="VisibleWhenSelected">
-            <DataGrid.Columns>
-                <DataGridTextColumn x:Name="tABLE_NAMEColumn" Binding="{Binding TABLE_NAME}" Header="TABLE NAME" Width="1*"/>
-                <DataGridTextColumn x:Name="uSER_NAMEColumn" Binding="{Binding USER_NAME}" Header="USER NAME" Width=".5*"/>
-                <DataGridTextColumn x:Name="sTART_TIMEColumn" Binding="{Binding START_TIME}" Header="START TIME" Width=".5*"/>
-            </DataGrid.Columns>
-        </DataGrid>
 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height=".85*" />
+            <RowDefinition Height=".12*" />
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0" DataContext="{StaticResource sEMAPHOREViewSource}" Margin="10">
+            <DataGrid x:Name="sEMAPHOREDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" Margin="1" RowDetailsVisibilityMode="VisibleWhenSelected">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="tABLE_NAMEColumn" Binding="{Binding TABLE_NAME, Mode=TwoWay}" Header="TABLE NAME" Width="1*"/>
+                    <DataGridTextColumn x:Name="uSER_NAMEColumn" Binding="{Binding USER_NAME, Mode=TwoWay}" Header="USER NAME" Width=".5*"/>
+                    <DataGridTextColumn x:Name="sTART_TIMEColumn" Binding="{Binding START_TIME, Mode=TwoWay}" Header="START TIME" Width=".5*"/>
+                </DataGrid.Columns>
+            </DataGrid>            
+        </Grid>
+        <Button Grid.Row="1" Margin="12, 3, 12, 10" Click="Button_Click">Close</Button>
     </Grid>
+    
 </Window>

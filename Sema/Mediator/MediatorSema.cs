@@ -10,6 +10,6 @@ namespace Sema.Mediator
     static class MediatorSema
     {
         public static TableState UsingTable { get; set; }
-        public static string TableName { get; set; }
+        //public static string TableName { get; set; }
     }
 }

@@ -88,9 +88,8 @@ namespace Sema.DbLayer
             ExecCommand(query);
         }
 
-        public static void DeleteFromTable()
+        public static void DeleteFromTable(TableState tableState)
         {
-            TableState tableState = MediatorSema.UsingTable;
             string query = String.Format("delete from SEMAPHORE t where t.table_name = '{0}'", tableState.TableName);
             ExecCommand(query);
         }
