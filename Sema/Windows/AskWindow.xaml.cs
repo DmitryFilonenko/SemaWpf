@@ -24,13 +24,12 @@ namespace Sema.Windows
             InitializeComponent();
         }
 
-        bool _isCloseParrent = false;
+        bool _isCloseParrent = true;
         public event EventHandler EventExit;
         public event EventHandler EventPickUpTable;
 
         private void button_ok_Click(object sender, RoutedEventArgs e)
-        {
-            _isCloseParrent = true;
+        {            
             this.Close();            
         }
 
@@ -44,6 +43,7 @@ namespace Sema.Windows
 
         private void button_update_Click(object sender, RoutedEventArgs e)
         {
+            _isCloseParrent = false;
             if (this.EventPickUpTable != null)
             {
                 this.EventPickUpTable(this, EventArgs.Empty);
