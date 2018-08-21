@@ -2,6 +2,7 @@
 using Sema.DbLayer.Manager;
 using Sema.FsLayer;
 using Sema.Mediator;
+using Sema.Windows;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,8 +47,24 @@ namespace Sema
             }
             else
             {
-                MessageBox.Show(String.Format("Таблица занята пользователем {0} c {1}.", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime));
+                //MessageBox.Show(String.Format("Таблица занята пользователем {0} c {1}.", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime));
+                AskWindow askWin = new AskWindow();
+                askWin.Title = tableName;
+                askWin.label_ask.Content = String.Format("Таблица {0} занята пользователем {1} c {2}.", tableName, MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime);
+                askWin.EventExit += AskWin_EventExit;
+                askWin.EventPickUpTable += AskWin_EventPickUpTable;
+                askWin.ShowDialog();
             }
+        }
+
+        private void AskWin_EventPickUpTable(object sender, EventArgs e)
+        {
+            MessageBox.Show("Pick Up");
+        }
+
+        private void AskWin_EventExit(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
         private void GetBatFile()
