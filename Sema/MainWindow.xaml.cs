@@ -46,15 +46,7 @@ namespace Sema
             }
             else
             {
-                //
-                //if(отбираем)
-                //{
-                //    update
-                //}
-                //else
-                //{
-                //    отбой
-                //}
+                MessageBox.Show(String.Format("Таблица занята пользователем {0} c {1}.", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime));
             }
         }
 
@@ -64,7 +56,7 @@ namespace Sema
             FileInfo[] files = di.GetFiles("*.bat");
             if (files.Length == 1)
             {
-                StartBatFile(files[0].FullName);
+                StartBatFile(files[0].Name);
             }           
         }
 
@@ -113,7 +105,10 @@ namespace Sema
 
         private void SetTableFree()
         {
-            ManagerDb.DeleteFromTable(MediatorSema.UsingTable);
+            if(MediatorSema.IsTableMy)
+            {
+                ManagerDb.DeleteFromTable(MediatorSema.UsingTable);
+            }            
         }
         #endregion
     }

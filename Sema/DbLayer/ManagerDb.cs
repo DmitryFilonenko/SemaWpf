@@ -1,9 +1,9 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿
 using Sema.DbLayer.Manager;
 using Sema.Mediator;
 using System;
 using System.Collections.Generic;
-//using System.Data.OracleClient;
+using System.Data.OracleClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,12 +70,15 @@ namespace Sema.DbLayer
             TableState ts = null;
             string query = "select t.table_name, t.user_name, t.start_time from SEMAPHORE t where t.table_name = '" + tableName + "'";
             OracleDataReader reader = GetReader(query);
-            if(reader.Depth > 0)
+            if(reader.HasRows)
             {
-                ts = new TableState();
-                ts.TableName = reader[0].ToString();
-                ts.UserName = reader[1].ToString();
-                ts.StartTime = reader[2].ToString();
+                while(reader.Read())
+                {
+                    ts = new TableState();
+                    ts.TableName = reader[0].ToString();
+                    ts.UserName = reader[1].ToString();
+                    ts.StartTime = reader[2].ToString();
+                }                
             }            
             return ts;
         }
@@ -105,9 +108,10 @@ namespace Sema.DbLayer
             TableState tableState = GetTableState(tableName);
             if (tableState != null)
             {
-                isFree = false;
-                MediatorSema.UsingTable = tableState;
+                isFree = false;                
             }
+            MediatorSema.UsingTable = tableState;
+            MediatorSema.IsTableMy = isFree;
             return isFree;
         }
     }
