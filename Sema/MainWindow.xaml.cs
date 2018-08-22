@@ -28,11 +28,23 @@ namespace Sema
     public partial class MainWindow : Window
     {
         bool _firstInit = true;
+        bool _isOwnerChange = false;
+        int _countToExit = 0;
 
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
+            Subsribe();
+        }
+
+        private void Subsribe()
+        {
+            ManagerDb.EventOwnerChanged += ManagerDb_EventOwnerChanged; ;
+        }
+
+        private void ManagerDb_EventOwnerChanged(object sender, EventArgs e)
+        {
+            _isOwnerChange = true;
         }
 
         private void CheckAndUpdateState()
@@ -59,7 +71,6 @@ namespace Sema
 
         private void AskWin_EventPickUpTable(object sender, EventArgs e)
         {
-            //MessageBox.Show("Pick Up");
             TableState tableState = new TableState();
             tableState.TableName = MediatorSema.UsingTable.TableName;
             tableState.UserName = Environment.UserName;
@@ -67,7 +78,6 @@ namespace Sema
             MediatorSema.UsingTable = tableState;
             ManagerDb.UpdateTableState();
             MediatorSema.IsTableMy = true;
-
         }
 
         private void AskWin_EventExit(object sender, EventArgs e)
@@ -102,9 +112,18 @@ namespace Sema
                 _firstInit = false;
                 CheckAndUpdateState();
             }
+            else
+            {
+                ManagerDb.IsOwnerChanged();
+                if (_isOwnerChange && _countToExit == 0)
+                {
+                    MessageBox.Show("Таблицу занял другой пользователь.", MediatorSema.UsingTable.TableName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    _countToExit++;
+                }
+            }
             
             GetDataFromDb();
-        }
+        }        
 
         private void GetDataFromDb()
         {

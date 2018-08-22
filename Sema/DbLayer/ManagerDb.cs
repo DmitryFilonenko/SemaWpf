@@ -9,9 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Sema.DbLayer
-{
-    static class ManagerDb
+{    static class ManagerDb
     {
+        public static event EventHandler EventOwnerChanged;
+
         #region Support
         static OracleConnection _con;
         static OracleCommand _cmd;
@@ -110,6 +111,28 @@ namespace Sema.DbLayer
             MediatorSema.UsingTable = tableState;
             MediatorSema.IsTableMy = isFree;
             return isFree;
+        }
+
+        public static void IsOwnerChanged()
+        {            
+            string query = "select count(*) from SEMAPHORE t where t.table_name = '" + MediatorSema.UsingTable.TableName + "' and t.user_name = '" + Environment.UserName + "'";
+            OracleDataReader reader = GetReader(query);
+            int count = 0;
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    count = Convert.ToInt32(reader[0]);
+                }
+            }
+            if (count == 0)
+            {
+                MediatorSema.IsTableMy = false;
+                if (EventOwnerChanged != null)
+                {
+                    EventOwnerChanged(count, EventArgs.Empty);
+                }
+            }
         }
     }
 }
