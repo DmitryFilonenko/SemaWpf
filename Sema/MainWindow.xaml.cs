@@ -27,6 +27,7 @@ namespace Sema
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const string _notFound = ""; 
         bool _firstInit = true;
         bool _isOwnerChange = false;
         int _countToExit = 0;
@@ -50,16 +51,21 @@ namespace Sema
         private void CheckAndUpdateState()
         {
             string tableName = ManagerFs.GetTableNameFromCtl();
+            if (tableName == "Не найден файл контрола")
+            {
+                MessageBox.Show(tableName);
+                this.Close();
+                return;
+            }
             this.Title = tableName;
             bool isTableFree = ManagerDb.IsTableFree(tableName);
             if (isTableFree)
-            {
+            {   
                 ManagerDb.InsertToTable(tableName);
                 GetBatFile();
             }
             else
-            {
-                //MessageBox.Show(String.Format("Таблица занята пользователем {0} c {1}.", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime));
+            {                
                 AskWindow askWin = new AskWindow();
                 askWin.Title = tableName;
                 askWin.label_ask.Content = String.Format("Таблица занята пользователем {0} c {1}.", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime);
@@ -78,6 +84,7 @@ namespace Sema
             MediatorSema.UsingTable = tableState;
             ManagerDb.UpdateTableState();
             MediatorSema.IsTableMy = true;
+            GetBatFile();
         }
 
         private void AskWin_EventExit(object sender, EventArgs e)
