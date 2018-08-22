@@ -50,7 +50,7 @@ namespace Sema
                 //MessageBox.Show(String.Format("Таблица занята пользователем {0} c {1}.", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime));
                 AskWindow askWin = new AskWindow();
                 askWin.Title = tableName;
-                askWin.label_ask.Content = String.Format("Таблица {0} занята пользователем {1} c {2}.", tableName, MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime);
+                askWin.label_ask.Content = String.Format("Таблица занята пользователем {0} c {1}.", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime);
                 askWin.EventExit += AskWin_EventExit;
                 askWin.EventPickUpTable += AskWin_EventPickUpTable;
                 askWin.ShowDialog();
@@ -59,7 +59,15 @@ namespace Sema
 
         private void AskWin_EventPickUpTable(object sender, EventArgs e)
         {
-            MessageBox.Show("Pick Up");
+            //MessageBox.Show("Pick Up");
+            TableState tableState = new TableState();
+            tableState.TableName = MediatorSema.UsingTable.TableName;
+            tableState.UserName = Environment.UserName;
+            tableState.StartTime = String.Format("{0:G}", DateTime.Now);
+            MediatorSema.UsingTable = tableState;
+            ManagerDb.UpdateTableState();
+            MediatorSema.IsTableMy = true;
+
         }
 
         private void AskWin_EventExit(object sender, EventArgs e)

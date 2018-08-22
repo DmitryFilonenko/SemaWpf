@@ -28,10 +28,6 @@ namespace Sema.DbLayer
             {
                 throw;
             }
-            //finally
-            //{
-            //    _con.Close();
-            //}
         }
 
         static void ExecCommand(string query)
@@ -99,7 +95,8 @@ namespace Sema.DbLayer
 
         public static void UpdateTableState()
         {
-            throw new NotImplementedException();
+            string query = String.Format("update SEMAPHORE t set t.user_name = '{0}', t.start_time = '{1}' where t.table_name = '{2}'", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime, MediatorSema.UsingTable.TableName);
+            ExecCommand(query);
         }
 
         internal static bool IsTableFree(string tableName)

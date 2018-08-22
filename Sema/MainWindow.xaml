@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Sema"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="{Binding TableName}" Height="360" Width="530" Closing="Window_Closing" Activated="Window_Activated">
+        Title="{Binding TableName}" Height="300" Width="530" Closing="Window_Closing" Activated="Window_Activated">
 
     <Window.Resources>
         <local:DataSet1 x:Key="dataSet1"/>
