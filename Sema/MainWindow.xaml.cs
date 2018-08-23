@@ -27,15 +27,31 @@ namespace Sema
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string _notFound = ""; 
         bool _firstInit = true;
         bool _isOwnerChange = false;
         int _countToExit = 0;
+        bool _isUpdate = false;
 
         public MainWindow()
         {
             InitializeComponent();
+            if (!isActualVersion())
+            {
+                MessageBoxResult result = MessageBox.Show(@"Похоже Сёма устарел, обновим?", "Сема", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                //if (result == MessageBoxResult.OK)
+                //{
+                //    _isUpdate = true;
+                //    this.Close();
+                //}
+            }
             Subsribe();
+        }
+
+        private bool isActualVersion()
+        {
+            long currentSize = ManagerFs.GetCurrentFileSize();
+            long actualSize = ManagerFs.GetActualFileSize();
+            return (currentSize == actualSize);
         }
 
         private void Subsribe()
@@ -160,6 +176,14 @@ namespace Sema
             {
                 ManagerDb.DeleteFromTable(MediatorSema.UsingTable);
             }            
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            //if (_isUpdate)
+            //{
+            //    ManagerFs.Update();
+            //}
         }
         #endregion
     }

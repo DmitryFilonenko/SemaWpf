@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Sema.FsLayer
 {
@@ -37,5 +40,57 @@ namespace Sema.FsLayer
         }
         #endregion
 
+
+        static FileInfo GetExeFile(string dirPath)
+        {
+            DirectoryInfo di = new DirectoryInfo(dirPath);
+            FileInfo[] fArr = di.GetFiles("*sema*.exe");
+            if (fArr.Length > 0)
+            {
+                return fArr[0];
+            }
+            return null;
+        }
+
+        public static long GetCurrentFileSize()
+        {
+            try
+            {
+                return GetExeFile(Environment.CurrentDirectory).Length;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
+        }
+
+        public static long GetActualFileSize()
+        {
+            try
+            {
+                return GetExeFile(@"x:\utils\Semaphore_new").Length;
+            }
+            catch (Exception)
+            {
+                throw;
+            }            
+        }
+
+        public static void Update()
+        {
+            try
+            {
+                //  Where run other app wich will copy files after close this app
+                //  Something like this:
+                //FileInfo source = GetExeFile(@"x:\utils\Semaphore_new");
+                //FileInfo dest = GetExeFile(Environment.CurrentDirectory);
+                //File.Copy(source.FullName, dest.FullName, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }           
+        }
     }
 }

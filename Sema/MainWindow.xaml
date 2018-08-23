@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Sema"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="{Binding TableName}" Height="300" Width="530" Closing="Window_Closing" Activated="Window_Activated">
+        Title="{Binding TableName}" Height="300" Width="530" Closing="Window_Closing" Activated="Window_Activated" Closed="Window_Closed">
 
     <Window.Resources>
         <local:DataSet1 x:Key="dataSet1"/>
@@ -16,7 +16,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height=".85*" />
-            <RowDefinition Height=".12*" />
+            <RowDefinition Height=".15*" />
         </Grid.RowDefinitions>
         
         <Grid Grid.Row="0" DataContext="{StaticResource sEMAPHOREViewSource}" Margin="10">
