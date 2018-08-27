@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sema.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -40,7 +41,6 @@ namespace Sema.FsLayer
         }
         #endregion
 
-
         static FileInfo GetExeFile(string dirPath)
         {
             DirectoryInfo di = new DirectoryInfo(dirPath);
@@ -56,7 +56,7 @@ namespace Sema.FsLayer
         {
             try
             {
-                return GetExeFile(Environment.CurrentDirectory).Length;
+                return GetExeFile(MediatorSema.IsUpdated? Environment.GetCommandLineArgs()[1] : Environment.CurrentDirectory).Length;
             }
             catch (Exception)
             {
@@ -83,14 +83,40 @@ namespace Sema.FsLayer
             {
                 //  Where run other app wich will copy files after close this app
                 //  Something like this:
-                //FileInfo source = GetExeFile(@"x:\utils\Semaphore_new");
-                //FileInfo dest = GetExeFile(Environment.CurrentDirectory);
-                //File.Copy(source.FullName, dest.FullName, true);
+                //  FileInfo source = GetExeFile(@"x:\utils\Semaphore_new");
+                //  FileInfo dest = GetExeFile(Environment.CurrentDirectory);
+                //  File.Copy(source.FullName, dest.FullName, true);
+
+                string path = (MediatorSema.IsUpdated ? Environment.GetCommandLineArgs()[1] : GetExeFile(Environment.CurrentDirectory).FullName);
+                Process proc = new Process();
+                string pathAsArg = path;
+                if (path.Contains(" "))
+                {
+                    pathAsArg = "\"" + pathAsArg + "\"";
+                }
+                proc.StartInfo.Arguments = pathAsArg;
+                proc.StartInfo.CreateNoWindow = true;
+                proc.StartInfo.FileName = @"d:\Dima\Programming\git\semophore_updater\bin\Debug\SemaUpd.exe";
+                proc.Start();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }           
+        }
+
+        internal static void IsUpdated()
+        {
+            string[] argArr = Environment.GetCommandLineArgs();
+            if (argArr.Length > 1)
+            {
+                MediatorSema.IsUpdated = true;                
+            }
+            else
+            {
+                MediatorSema.IsUpdated = false;
+            }
+
         }
     }
 }

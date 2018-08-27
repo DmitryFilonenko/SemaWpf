@@ -34,15 +34,15 @@ namespace Sema
 
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
             if (!isActualVersion())
             {
-                MessageBoxResult result = MessageBox.Show(@"Похоже Сёма устарел, обновим?", "Сема", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                //if (result == MessageBoxResult.OK)
-                //{
-                //    _isUpdate = true;
-                //    this.Close();
-                //}
+                MessageBoxResult result = MessageBox.Show("Я устарел, обновитьcя?", "Старый Сема", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.OK)
+                {
+                    _isUpdate = true;
+                    this.Close();
+                }
             }
             Subsribe();
         }
@@ -73,7 +73,8 @@ namespace Sema
                 this.Close();
                 return;
             }
-            this.Title = tableName;
+            ManagerFs.IsUpdated();
+            this.Title = (MediatorSema.IsUpdated? "Успешное обновление до актуальной версии." : tableName);
             bool isTableFree = ManagerDb.IsTableFree(tableName);
             if (isTableFree)
             {   
@@ -110,7 +111,8 @@ namespace Sema
 
         private void GetBatFile()
         {
-            DirectoryInfo di = new DirectoryInfo(Environment.CurrentDirectory);
+            string pathToDir = Environment.GetCommandLineArgs()[1].Substring(0, Environment.GetCommandLineArgs()[1].LastIndexOf("\\"));
+            DirectoryInfo di = new DirectoryInfo(MediatorSema.IsUpdated? pathToDir : Environment.CurrentDirectory);
             FileInfo[] files = di.GetFiles("*.bat");
             if (files.Length == 1)
             {
@@ -144,7 +146,8 @@ namespace Sema
                     _countToExit++;
                 }
             }
-            
+            //MessageBox.Show(Environment.GetCommandLineArgs()[0]);
+            //MessageBox.Show(Environment.GetCommandLineArgs()[1]);
             GetDataFromDb();
         }        
 
@@ -180,10 +183,10 @@ namespace Sema
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            //if (_isUpdate)
-            //{
-            //    ManagerFs.Update();
-            //}
+            if (_isUpdate)
+            {
+                ManagerFs.Update();
+            }
         }
         #endregion
     }
