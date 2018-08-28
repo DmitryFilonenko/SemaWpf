@@ -52,25 +52,23 @@ namespace Sema.FsLayer
         //    return null;
         //}
 
-        public static long GetCurrentFileSize()
-        {
-            try
-            {
-                return new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location).Length;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            
-        }
+        //public static long GetCurrentFileSize()
+        //{
+        //    try
+        //    {
+        //        return new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location).Length;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }            
+        //}
 
         public static DateTime GetCurrentFileDate()
         {
             try
             {
-
-                return File.GetLastAccessTimeUtc(System.Reflection.Assembly.GetEntryAssembly().Location);
+                return File.GetLastWriteTime(System.Reflection.Assembly.GetEntryAssembly().Location);
             }
             catch (Exception)
             {
@@ -79,23 +77,23 @@ namespace Sema.FsLayer
 
         }
 
-        public static long GetActualFileSize()
-        {
-            try
-            {
-                return new FileInfo(@"x:\utils\Semaphore_new\0 Sema.exe").Length;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        //public static long GetActualFileSize()
+        //{
+        //    try
+        //    {
+        //        return new FileInfo(@"x:\utils\Semaphore_new\0 Sema.exe").Length;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
 
         public static DateTime GetActualFileDate()
         {
             try
             {
-                return File.GetLastAccessTimeUtc(@"x:\utils\Semaphore_new");    //return GetExeFile(@"x:\utils\Semaphore_new").LastWriteTimeUtc;
+                return File.GetLastWriteTime(@"x:\utils\Semaphore_new\0_Sema.exe");    //return GetExeFile(@"x:\utils\Semaphore_new").LastWriteTimeUtc;
             }
             catch (Exception)
             {
@@ -116,7 +114,7 @@ namespace Sema.FsLayer
                 }
                 proc.StartInfo.Arguments = pathAsArg;
                 proc.StartInfo.CreateNoWindow = true;
-                proc.StartInfo.FileName = @"d:\Dima\Programming\git\semophore_updater\bin\Debug\SemaUpd.exe";
+                proc.StartInfo.FileName = @"x:\utils\Semaphore_updater\SemaUpd.exe";
                 proc.Start();
             }
             catch (Exception ex)

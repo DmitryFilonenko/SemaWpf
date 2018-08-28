@@ -64,7 +64,7 @@ namespace Sema
             //return (currentSize == actualSize);
             DateTime currentFileDate = ManagerFs.GetCurrentFileDate();
             DateTime actualFileDate = ManagerFs.GetActualFileDate();
-            bool isActual = (currentFileDate >= actualFileDate);    ///////////////////////////////////// заменить < на >
+            bool isActual = (currentFileDate >= actualFileDate);    
             return isActual;
         }
 
@@ -141,7 +141,13 @@ namespace Sema
             if (files.Length == 1)
             {
                 StartBatFile(files[0].Name);
-            }           
+            }
+            else
+            {
+                MediatorSema.BatCounter = files.Length;
+                SelectBatWindow win = new SelectBatWindow();
+                win.Show();
+            }
         }
 
         void StartBatFile(string fileName)

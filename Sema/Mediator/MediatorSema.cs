@@ -12,5 +12,6 @@ namespace Sema.Mediator
         public static TableState UsingTable { get; set; }
         public static bool IsTableMy { get; set; }
         //public static bool IsUpdated { get; set; }
+        public static int BatCounter { get; set; }
     }
 }
