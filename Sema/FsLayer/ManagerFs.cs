@@ -65,6 +65,19 @@ namespace Sema.FsLayer
             
         }
 
+        public static DateTime GetCurrentFileDate()
+        {
+            try
+            {
+                return GetExeFile(MediatorSema.IsUpdated ? Environment.GetCommandLineArgs()[1] : Environment.CurrentDirectory).LastWriteTimeUtc;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
         public static long GetActualFileSize()
         {
             try
@@ -74,8 +87,23 @@ namespace Sema.FsLayer
             catch (Exception)
             {
                 throw;
-            }            
+            }
         }
+
+        public static DateTime GetActualFileDate()
+        {
+            try
+            {
+                return GetExeFile(@"x:\utils\Semaphore_new").LastWriteTimeUtc;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
 
         public static void Update()
         {

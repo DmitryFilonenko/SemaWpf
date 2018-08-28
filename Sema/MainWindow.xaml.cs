@@ -49,9 +49,13 @@ namespace Sema
 
         private bool isActualVersion()
         {
-            long currentSize = ManagerFs.GetCurrentFileSize();
-            long actualSize = ManagerFs.GetActualFileSize();
-            return (currentSize == actualSize);
+            //long currentSize = ManagerFs.GetCurrentFileSize();
+            //long actualSize = ManagerFs.GetActualFileSize();
+            //return (currentSize == actualSize);
+            DateTime currentFileDate = ManagerFs.GetCurrentFileDate();
+            DateTime actualFileDate = ManagerFs.GetActualFileDate();
+            bool isActual = (currentFileDate > actualFileDate);
+            return isActual;
         }
 
         private void Subsribe()
@@ -111,8 +115,17 @@ namespace Sema
 
         private void GetBatFile()
         {
-            string pathToDir = Environment.GetCommandLineArgs()[1].Substring(0, Environment.GetCommandLineArgs()[1].LastIndexOf("\\"));
-            DirectoryInfo di = new DirectoryInfo(MediatorSema.IsUpdated? pathToDir : Environment.CurrentDirectory);
+            string pathToDir = "";
+
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                pathToDir = System.IO.Path.GetDirectoryName(Environment.GetCommandLineArgs()[1]);
+            }
+            else
+            {
+                pathToDir = Environment.CurrentDirectory;
+            }
+            DirectoryInfo di = new DirectoryInfo(pathToDir);
             FileInfo[] files = di.GetFiles("*.bat");
             if (files.Length == 1)
             {
@@ -123,7 +136,6 @@ namespace Sema
         void StartBatFile(string fileName)
         {
                 Process proc = new Process();
-                //proc.Exited += new EventHandler(FinishHandler);
                 proc.StartInfo.CreateNoWindow = true;
                 proc.StartInfo.FileName = fileName;
                 proc.EnableRaisingEvents = true;
@@ -146,8 +158,6 @@ namespace Sema
                     _countToExit++;
                 }
             }
-            //MessageBox.Show(Environment.GetCommandLineArgs()[0]);
-            //MessageBox.Show(Environment.GetCommandLineArgs()[1]);
             GetDataFromDb();
         }        
 
