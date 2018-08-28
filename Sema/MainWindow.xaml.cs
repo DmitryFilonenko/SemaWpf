@@ -34,7 +34,16 @@ namespace Sema
 
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
+
+
+            //if (Environment.GetCommandLineArgs().Length > 1)
+            //{
+            //    MessageBox.Show("Я запущен с параметром: " + Environment.GetCommandLineArgs()[1]);
+            //    MessageBox.Show("Путь: " + System.Reflection.Assembly.GetEntryAssembly().Location);                
+            //}
+
+
             if (!isActualVersion())
             {
                 MessageBoxResult result = MessageBox.Show("Я устарел, обновитьcя?", "Старый Сема", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
@@ -51,10 +60,11 @@ namespace Sema
         {
             //long currentSize = ManagerFs.GetCurrentFileSize();
             //long actualSize = ManagerFs.GetActualFileSize();
+            //MessageBox.Show(String.Format("currentSize = {0} actualSize = {1}", currentSize, actualSize));
             //return (currentSize == actualSize);
             DateTime currentFileDate = ManagerFs.GetCurrentFileDate();
             DateTime actualFileDate = ManagerFs.GetActualFileDate();
-            bool isActual = (currentFileDate > actualFileDate);
+            bool isActual = (currentFileDate >= actualFileDate);    ///////////////////////////////////// заменить < на >
             return isActual;
         }
 
@@ -77,8 +87,9 @@ namespace Sema
                 this.Close();
                 return;
             }
-            ManagerFs.IsUpdated();
-            this.Title = (MediatorSema.IsUpdated? "Успешное обновление до актуальной версии." : tableName);
+            //ManagerFs.IsUpdated();
+            //this.Title = (MediatorSema.IsUpdated? "Успешное обновление до актуальной версии." : tableName);
+            this.Title = tableName;
             bool isTableFree = ManagerDb.IsTableFree(tableName);
             if (isTableFree)
             {   
@@ -115,17 +126,17 @@ namespace Sema
 
         private void GetBatFile()
         {
-            string pathToDir = "";
+            //string pathToDir = "";
 
-            if (Environment.GetCommandLineArgs().Length > 1)
-            {
-                pathToDir = System.IO.Path.GetDirectoryName(Environment.GetCommandLineArgs()[1]);
-            }
-            else
-            {
-                pathToDir = Environment.CurrentDirectory;
-            }
-            DirectoryInfo di = new DirectoryInfo(pathToDir);
+            //if (Environment.GetCommandLineArgs().Length > 1)
+            //{
+            //    pathToDir = System.IO.Path.GetDirectoryName(Environment.GetCommandLineArgs()[1]);
+            //}
+            //else
+            //{
+            //    pathToDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            //}
+            DirectoryInfo di = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
             FileInfo[] files = di.GetFiles("*.bat");
             if (files.Length == 1)
             {

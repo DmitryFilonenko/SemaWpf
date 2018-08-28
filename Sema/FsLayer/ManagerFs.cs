@@ -17,7 +17,7 @@ namespace Sema.FsLayer
         public static string GetTableNameFromCtl()
         {
             string tableName = "Не найден файл контрола";
-            DirectoryInfo currentDir = new DirectoryInfo(Environment.CurrentDirectory);
+            DirectoryInfo currentDir = new DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
             FileInfo[] pathArr = currentDir.GetFiles("*.ctl");
             if (pathArr.Length > 0)
             {
@@ -41,22 +41,22 @@ namespace Sema.FsLayer
         }
         #endregion
 
-        static FileInfo GetExeFile(string dirPath)
-        {
-            DirectoryInfo di = new DirectoryInfo(dirPath);
-            FileInfo[] fArr = di.GetFiles("*sema*.exe");
-            if (fArr.Length > 0)
-            {
-                return fArr[0];
-            }
-            return null;
-        }
+        //static FileInfo GetExeFile(string dirPath)
+        //{
+        //    DirectoryInfo di = new DirectoryInfo(dirPath);
+        //    FileInfo[] fArr = di.GetFiles("*sema*.exe");
+        //    if (fArr.Length > 0)
+        //    {
+        //        return fArr[0];
+        //    }
+        //    return null;
+        //}
 
         public static long GetCurrentFileSize()
         {
             try
             {
-                return GetExeFile(MediatorSema.IsUpdated? Environment.GetCommandLineArgs()[1] : Environment.CurrentDirectory).Length;
+                return new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location).Length;
             }
             catch (Exception)
             {
@@ -69,7 +69,8 @@ namespace Sema.FsLayer
         {
             try
             {
-                return GetExeFile(MediatorSema.IsUpdated ? Environment.GetCommandLineArgs()[1] : Environment.CurrentDirectory).LastWriteTimeUtc;
+
+                return File.GetLastAccessTimeUtc(System.Reflection.Assembly.GetEntryAssembly().Location);
             }
             catch (Exception)
             {
@@ -82,7 +83,7 @@ namespace Sema.FsLayer
         {
             try
             {
-                return GetExeFile(@"x:\utils\Semaphore_new").Length;
+                return new FileInfo(@"x:\utils\Semaphore_new\0 Sema.exe").Length;
             }
             catch (Exception)
             {
@@ -94,7 +95,7 @@ namespace Sema.FsLayer
         {
             try
             {
-                return GetExeFile(@"x:\utils\Semaphore_new").LastWriteTimeUtc;
+                return File.GetLastAccessTimeUtc(@"x:\utils\Semaphore_new");    //return GetExeFile(@"x:\utils\Semaphore_new").LastWriteTimeUtc;
             }
             catch (Exception)
             {
@@ -102,20 +103,11 @@ namespace Sema.FsLayer
             }
         }
 
-
-
-
         public static void Update()
         {
             try
             {
-                //  Where run other app wich will copy files after close this app
-                //  Something like this:
-                //  FileInfo source = GetExeFile(@"x:\utils\Semaphore_new");
-                //  FileInfo dest = GetExeFile(Environment.CurrentDirectory);
-                //  File.Copy(source.FullName, dest.FullName, true);
-
-                string path = (MediatorSema.IsUpdated ? Environment.GetCommandLineArgs()[1] : GetExeFile(Environment.CurrentDirectory).FullName);
+                string path = System.Reflection.Assembly.GetEntryAssembly().Location;
                 Process proc = new Process();
                 string pathAsArg = path;
                 if (path.Contains(" "))
@@ -133,18 +125,17 @@ namespace Sema.FsLayer
             }           
         }
 
-        internal static void IsUpdated()
-        {
-            string[] argArr = Environment.GetCommandLineArgs();
-            if (argArr.Length > 1)
-            {
-                MediatorSema.IsUpdated = true;                
-            }
-            else
-            {
-                MediatorSema.IsUpdated = false;
-            }
-
-        }
+        //internal static void IsUpdated()
+        //{
+        //    string[] argArr = Environment.GetCommandLineArgs();
+        //    if (argArr.Length > 1)
+        //    {
+        //        MediatorSema.IsUpdated = true;                
+        //    }
+        //    else
+        //    {
+        //        MediatorSema.IsUpdated = false;
+        //    }
+        //}
     }
 }
