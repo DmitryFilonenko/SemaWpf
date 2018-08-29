@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,27 +22,68 @@ namespace Sema.Windows
     /// </summary>
     public partial class SelectBatWindow : Window
     {
+        public event EventHandler EventBatSelected;
+
+        const int _cButtonHeight = 70;
+        const int _cButtonWidth = 300;
+
+        bool _isSelected = false;
+
         public SelectBatWindow()
         {
             InitializeComponent();
+            this.Title = MediatorSema.UsingTable.TableName;
             CreateButtons();
         }
 
         private void CreateButtons()
         {
-            for (int i = 0; i < MediatorSema.BatCounter; i++)
+            int count = 0;
+            
+            List<FileInfo> list = MediatorSema.BatFileList;
+
+            SetWindowSize(list.Count);
+
+            foreach (var item in list)
             {
                 Button newBtn = new Button();
-                newBtn.Content = i.ToString();
-                newBtn.Name = "Button" + i.ToString();
+                newBtn.Content = item.Name;
+                newBtn.Name = "button_" + count++;
+                newBtn.Width = _cButtonWidth;
+                newBtn.Height = _cButtonHeight;
+
+                Thickness margin = newBtn.Margin;
+                margin.Top = list.Count * 10;
+                newBtn.Margin = margin;
+
+                newBtn.Click += NewBtn_Click;
+
                 stackPanel.Children.Add(newBtn);
             }
         }
 
-        private readonly ObservableCollection<SomeDataModel> _MyData = new ObservableCollection<SomeDataModel>();
-        public ObservableCollection<SomeDataModel> MyData { get { return _MyData; } }
+        private void NewBtn_Click(object sender, RoutedEventArgs e)
+        {
+            _isSelected = true;
+            if (EventBatSelected != null)
+            {
+               EventBatSelected(sender, EventArgs.Empty);
+            }            
+            this.Close();
+        }
 
+        private void SetWindowSize(int count)
+        {
+            this.Height = (_cButtonHeight * count) + (50 * count);
+            this.Width = _cButtonWidth + 70;
+        }
 
-
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(!_isSelected)
+            {
+                e.Cancel = true;
+            }           
+        }
     }
 }

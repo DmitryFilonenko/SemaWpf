@@ -36,14 +36,6 @@ namespace Sema
         {
             InitializeComponent();
 
-
-            //if (Environment.GetCommandLineArgs().Length > 1)
-            //{
-            //    MessageBox.Show("Я запущен с параметром: " + Environment.GetCommandLineArgs()[1]);
-            //    MessageBox.Show("Путь: " + System.Reflection.Assembly.GetEntryAssembly().Location);                
-            //}
-
-
             if (!isActualVersion())
             {
                 MessageBoxResult result = MessageBox.Show("Я устарел, обновитьcя?", "Старый Сема", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
@@ -70,7 +62,7 @@ namespace Sema
 
         private void Subsribe()
         {
-            ManagerDb.EventOwnerChanged += ManagerDb_EventOwnerChanged; ;
+            ManagerDb.EventOwnerChanged += ManagerDb_EventOwnerChanged; 
         }
 
         private void ManagerDb_EventOwnerChanged(object sender, EventArgs e)
@@ -87,8 +79,7 @@ namespace Sema
                 this.Close();
                 return;
             }
-            //ManagerFs.IsUpdated();
-            //this.Title = (MediatorSema.IsUpdated? "Успешное обновление до актуальной версии." : tableName);
+
             this.Title = tableName;
             bool isTableFree = ManagerDb.IsTableFree(tableName);
             if (isTableFree)
@@ -126,37 +117,59 @@ namespace Sema
 
         private void GetBatFile()
         {
-            //string pathToDir = "";
-
-            //if (Environment.GetCommandLineArgs().Length > 1)
-            //{
-            //    pathToDir = System.IO.Path.GetDirectoryName(Environment.GetCommandLineArgs()[1]);
-            //}
-            //else
-            //{
-            //    pathToDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-            //}
             DirectoryInfo di = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-            FileInfo[] files = di.GetFiles("*.bat");
+            FileInfo[] files = di.GetFiles("*import*.bat");
             if (files.Length == 1)
             {
                 StartBatFile(files[0].Name);
             }
             else
             {
-                MediatorSema.BatCounter = files.Length;
+                foreach (var item in files)
+                {
+                    MediatorSema.BatFileList.Add(item);
+                }                
                 SelectBatWindow win = new SelectBatWindow();
-                win.Show();
+                win.EventBatSelected += Win_EventBatSelected;
+                win.ShowDialog();
             }
+        }
+
+        private void Win_EventBatSelected(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+            string name = btn.Content.ToString();
+            string fullName = GetBatFileFullPath(name);
+            StartBatFile(fullName);
+        }
+
+        private string GetBatFileFullPath(string name)
+        {
+            string str = "";
+            foreach (var item in MediatorSema.BatFileList)
+            {
+                if (item.Name == name)
+                {
+                    str = name;
+                    break;
+                }
+            }
+            return str;
         }
 
         void StartBatFile(string fileName)
         {
                 Process proc = new Process();
                 proc.StartInfo.CreateNoWindow = true;
+                proc.Exited += Proc_Exited;
                 proc.StartInfo.FileName = fileName;
                 proc.EnableRaisingEvents = true;
                 proc.Start();
+        }
+
+        private void Proc_Exited(object sender, EventArgs e)
+        {
+            // open log file
         }
 
         private void Window_Activated(object sender, EventArgs e)

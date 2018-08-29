@@ -5,17 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sema.Windows"
         mc:Ignorable="d"
-        Title="Sema" Height="450" Width="800" >
-
+        WindowStartupLocation="CenterScreen"
+        Title="Sema" Height="450" Width="800" Closing="Window_Closing" >    
+    
     <Grid>
-        <StackPanel Name="stackPanel">
-            <ItemsControl ItemsSource="{Binding MyData}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Content="{Binding Content}" Command="{Binding Command}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+        <StackPanel Name="stackPanel">           
         </StackPanel>
     </Grid>
 </Window>

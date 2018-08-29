@@ -1,6 +1,8 @@
 ﻿using Sema.DbLayer.Manager;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ namespace Sema.Mediator
     {
         public static TableState UsingTable { get; set; }
         public static bool IsTableMy { get; set; }
-        //public static bool IsUpdated { get; set; }
-        public static int BatCounter { get; set; }
+        static List<FileInfo> _batFileList = new List<FileInfo>();
+        public static List<FileInfo> BatFileList { get { return _batFileList; } set { _batFileList = value; } }
     }
 }
