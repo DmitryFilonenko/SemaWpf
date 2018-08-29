@@ -104,6 +104,7 @@ namespace Sema
             tableState.TableName = MediatorSema.UsingTable.TableName;
             tableState.UserName = Environment.UserName;
             tableState.StartTime = String.Format("{0:G}", DateTime.Now);
+            tableState.Path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
             MediatorSema.UsingTable = tableState;
             ManagerDb.UpdateTableState();
             MediatorSema.IsTableMy = true;

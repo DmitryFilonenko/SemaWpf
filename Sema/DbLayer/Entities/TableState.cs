@@ -11,5 +11,6 @@ namespace Sema.DbLayer.Manager
         public string TableName { get; set; }
         public string UserName { get; set; }
         public string StartTime { get; set; }
+        public string Path { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Sema.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Data.OracleClient;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,9 +83,9 @@ namespace Sema.DbLayer
 
         public static void InsertToTable(string tableName)
         {
-            TableState tableState = new TableState() { UserName = Environment.UserName, TableName = tableName, StartTime = String.Format("{0:G}", DateTime.Now) };
+            TableState tableState = new TableState() { UserName = Environment.UserName, TableName = tableName, StartTime = String.Format("{0:G}", DateTime.Now), Path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) };
             MediatorSema.UsingTable = tableState;
-            string query = String.Format("insert into semaphore(table_name, user_name, start_time) values ('{0}', '{1}', '{2}')", tableState.TableName, tableState.UserName, tableState.StartTime);
+            string query = String.Format("insert into semaphore(table_name, user_name, start_time, path) values ('{0}', '{1}', '{2}', '{3}')", tableState.TableName, tableState.UserName, tableState.StartTime, tableState.Path);
             ExecCommand(query);
         }
 
@@ -96,7 +97,7 @@ namespace Sema.DbLayer
 
         public static void UpdateTableState()
         {
-            string query = String.Format("update SEMAPHORE t set t.user_name = '{0}', t.start_time = '{1}' where t.table_name = '{2}'", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime, MediatorSema.UsingTable.TableName);
+            string query = String.Format("update SEMAPHORE t set t.user_name = '{0}', t.start_time = '{1}', t.path = '{2}' where t.table_name = '{3}'", MediatorSema.UsingTable.UserName, MediatorSema.UsingTable.StartTime, MediatorSema.UsingTable.Path, MediatorSema.UsingTable.TableName);
             ExecCommand(query);
         }
 
