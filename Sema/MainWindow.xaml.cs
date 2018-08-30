@@ -130,11 +130,16 @@ namespace Sema
                 foreach (var item in files)
                 {
                     MediatorSema.BatFileList.Add(item);
-                }                
-                SelectBatWindow win = new SelectBatWindow();
-                win.EventBatSelected += Win_EventBatSelected;
-                win.ShowDialog();
+                }
+                RunSelectWindow();                
             }
+        }
+
+        private void RunSelectWindow()
+        {
+            SelectBatWindow win = new SelectBatWindow();
+            win.EventBatSelected += Win_EventBatSelected;
+            win.ShowDialog();
         }
 
         private void Win_EventBatSelected(object sender, EventArgs e)
@@ -245,7 +250,14 @@ namespace Sema
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            StartBatFile(MediatorSema.CurrentBat);
+            if (MediatorSema.BatFileList.Count == 0)
+            {
+                StartBatFile(MediatorSema.CurrentBat);
+            }
+            else
+            {
+                RunSelectWindow();
+            }            
         }
     }
 }
