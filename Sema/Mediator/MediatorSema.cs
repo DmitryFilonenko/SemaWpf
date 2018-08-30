@@ -15,5 +15,6 @@ namespace Sema.Mediator
         public static bool IsTableMy { get; set; }
         static List<FileInfo> _batFileList = new List<FileInfo>();
         public static List<FileInfo> BatFileList { get { return _batFileList; } set { _batFileList = value; } }
+        public static string CurrentBat { get; set; }
     }
 }

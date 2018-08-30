@@ -123,6 +123,20 @@ namespace Sema.FsLayer
             }           
         }
 
+        internal static string GetCtlFromBat(string currentBat)
+        {
+            string str = File.ReadAllText(currentBat);
+            string ctlName = str.Substring(str.LastIndexOf("=") + 1).Trim();
+            return ctlName;
+        }
+
+        internal static string GetLogName(string ctlName)
+        {
+            string ext = Path.GetExtension(ctlName);
+            string logName = ctlName.Replace(ext, ".log");
+            return logName;
+        }
+
         //internal static void IsUpdated()
         //{
         //    string[] argArr = Environment.GetCommandLineArgs();

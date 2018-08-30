@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -160,17 +161,28 @@ namespace Sema
 
         void StartBatFile(string fileName)
         {
-                Process proc = new Process();
-                proc.StartInfo.CreateNoWindow = true;
-                proc.Exited += Proc_Exited;
-                proc.StartInfo.FileName = fileName;
-                proc.EnableRaisingEvents = true;
-                proc.Start();
+            MediatorSema.CurrentBat = fileName;
+            Process proc = new Process();
+            proc.StartInfo.CreateNoWindow = true;
+            proc.Exited += Proc_Exited;
+            proc.StartInfo.FileName = fileName;
+            proc.EnableRaisingEvents = true;
+            proc.Start();
         }
 
         private void Proc_Exited(object sender, EventArgs e)
         {
-            // open log file
+            string ctlName = ManagerFs.GetCtlFromBat(MediatorSema.CurrentBat);
+            string logName = ManagerFs.GetLogName(ctlName);
+            RunLogFile(logName);
+        }
+
+        private void RunLogFile(string logName)
+        {
+            Process proc = new Process();
+            proc.StartInfo.CreateNoWindow = false;
+            proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, logName);
+            proc.Start();
         }
 
         private void Window_Activated(object sender, EventArgs e)
@@ -230,5 +242,10 @@ namespace Sema
             }
         }
         #endregion
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            StartBatFile(MediatorSema.CurrentBat);
+        }
     }
 }
