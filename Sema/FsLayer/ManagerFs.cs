@@ -17,12 +17,19 @@ namespace Sema.FsLayer
         public static string GetTableNameFromCtl()
         {
             string tableName = "Не найден файл контрола";
-            DirectoryInfo currentDir = new DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-            FileInfo[] pathArr = currentDir.GetFiles("*.ctl");
-            if (pathArr.Length > 0)
+            try
+            {                
+                DirectoryInfo currentDir = new DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+                FileInfo[] pathArr = currentDir.GetFiles("*.ctl");
+                if (pathArr.Length > 0)
+                {
+                    string pathToCtl = pathArr[0].FullName;
+                    tableName = GetTableName(pathToCtl);
+                }                
+            }
+            catch (Exception)
             {
-                string pathToCtl = pathArr[0].FullName;
-                tableName = GetTableName(pathToCtl);
+                throw;
             }
             return tableName;
         }
@@ -30,39 +37,24 @@ namespace Sema.FsLayer
         private static string GetTableName(string path)
         {
             string str = File.ReadAllText(path);
-            string startText = "INTO TABLE";
-            string endText = "FIELDS TERMINATED BY";
-            int indexStart = str.IndexOf(startText);
-            str = str.Substring(indexStart + startText.Length);
-            int indexEnd = str.IndexOf(endText);
-            str = str.Substring(0, indexEnd);
-            str = str.Replace("\"", "").Trim();
+            try
+            {
+                string startText = "INTO TABLE";
+                string endText = "FIELDS TERMINATED BY";
+                int indexStart = str.IndexOf(startText);
+                str = str.Substring(indexStart + startText.Length);
+                int indexEnd = str.IndexOf(endText);
+                str = str.Substring(0, indexEnd);
+                str = str.Replace("\"", "").Trim();
+            }
+            catch (Exception)
+            {
+                throw;
+            }            
             return str;
         }
         #endregion
 
-        //static FileInfo GetExeFile(string dirPath)
-        //{
-        //    DirectoryInfo di = new DirectoryInfo(dirPath);
-        //    FileInfo[] fArr = di.GetFiles("*sema*.exe");
-        //    if (fArr.Length > 0)
-        //    {
-        //        return fArr[0];
-        //    }
-        //    return null;
-        //}
-
-        //public static long GetCurrentFileSize()
-        //{
-        //    try
-        //    {
-        //        return new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location).Length;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }            
-        //}
 
         public static DateTime GetCurrentFileDate()
         {
@@ -76,18 +68,6 @@ namespace Sema.FsLayer
             }
 
         }
-
-        //public static long GetActualFileSize()
-        //{
-        //    try
-        //    {
-        //        return new FileInfo(@"x:\utils\Semaphore_new\0 Sema.exe").Length;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
 
         public static DateTime GetActualFileDate()
         {
@@ -125,29 +105,32 @@ namespace Sema.FsLayer
 
         internal static string GetCtlFromBat(string currentBat)
         {
-            string str = File.ReadAllText(currentBat);
-            string ctlName = str.Substring(str.LastIndexOf("=") + 1).Trim();
+            string ctlName;
+            try
+            {
+                string str = File.ReadAllText(currentBat);
+                ctlName = str.Substring(str.LastIndexOf("=") + 1).Trim();
+            }
+            catch (Exception)
+            {
+                throw;
+            }            
             return ctlName;
         }
 
         internal static string GetLogName(string ctlName)
         {
-            string ext = Path.GetExtension(ctlName);
-            string logName = ctlName.Replace(ext, ".log");
+            string logName;
+            try
+            {
+                string ext = Path.GetExtension(ctlName);
+                logName = ctlName.Replace(ext, ".log");
+            }
+            catch (Exception)
+            {
+                throw;
+            }            
             return logName;
         }
-
-        //internal static void IsUpdated()
-        //{
-        //    string[] argArr = Environment.GetCommandLineArgs();
-        //    if (argArr.Length > 1)
-        //    {
-        //        MediatorSema.IsUpdated = true;                
-        //    }
-        //    else
-        //    {
-        //        MediatorSema.IsUpdated = false;
-        //    }
-        //}
     }
 }
