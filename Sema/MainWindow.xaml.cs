@@ -88,7 +88,7 @@ namespace Sema
                 if (isTableFree)
                 {
                     ManagerDb.InsertToTable(tableName);
-                    GetBatFile();
+                    GetFiles(FileType.Bat);
                 }
                 else
                 {
@@ -119,7 +119,7 @@ namespace Sema
                 MediatorSema.UsingTable = tableState;
                 ManagerDb.UpdateTableState();
                 MediatorSema.IsTableMy = true;
-                GetBatFile();
+                GetFiles(FileType.Bat);
             }
             catch (Exception ex)
             {
@@ -132,21 +132,25 @@ namespace Sema
             this.Close();
         }
 
-        private void GetBatFile()
+        enum FileType { Bat, Ctl }
+
+        private void GetFiles(FileType fileType)
         {
             try
             {
                 DirectoryInfo di = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-                FileInfo[] files = di.GetFiles("*import*.bat");
+                FileInfo[] files = fileType == FileType.Bat? di.GetFiles("*import*.bat") : di.GetFiles("*.ctl");
                 if (files.Length == 1)
                 {
-                    StartBatFile(files[0].Name);
+                    if (fileType == FileType.Bat) StartBatFile(files[0].Name);
+                    else RunCtlFile(files[0].Name);
                 }
                 else
                 {
                     foreach (var item in files)
                     {
-                        MediatorSema.BatFileList.Add(item);
+                        if (fileType == FileType.Bat) MediatorSema.BatFileList.Add(item);
+                        else MediatorSema.CtlFileList.Add(item);
                     }
                     RunSelectWindow();
                 }
@@ -155,6 +159,21 @@ namespace Sema
             {
                 MessageBox.Show(ex.Message, "GetBatFile() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }            
+        }
+
+        private void RunCtlFile(string ctlName)
+        {
+            try
+            {
+                Process proc = new Process();
+                proc.StartInfo.CreateNoWindow = false;
+                proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, ctlName);
+                proc.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "RunCtlFile() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void RunSelectWindow()
@@ -371,6 +390,25 @@ namespace Sema
             {
                 MessageBox.Show(ex.Message, "GetDataFromDb() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }                        
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (MediatorSema.BatFileList.Count == 0)
+                {
+                    RunCtlFile(MediatorSema.CurrentCtl);
+                }
+                else
+                {
+                    RunSelectWindow();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "GetDataFromDb() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

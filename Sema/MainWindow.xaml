@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Sema"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="{Binding TableName}" Height="300" MaxHeight="390" Width="auto" MaxWidth="730" Closing="Window_Closing" Activated="Window_Activated" Closed="Window_Closed">
+        Title="{Binding TableName}" Height="330" MaxHeight="390" Width="auto" MaxWidth="730" Closing="Window_Closing" Activated="Window_Activated" Closed="Window_Closed">
 
     <Window.Resources>
         <local:DataSet1 x:Key="dataSet1"/>
@@ -16,6 +16,7 @@
     <Grid DataContext="{StaticResource sEMAPHOREViewSource}">
         <Grid.RowDefinitions>
             <RowDefinition Height=".7*" />
+            <RowDefinition Height=".17*" />
             <RowDefinition Height=".17*" />
             <RowDefinition Height=".17*" />
         </Grid.RowDefinitions>
@@ -30,7 +31,8 @@
         </DataGrid>
 
         <Button Grid.Row="1" Margin="7, 5, 7, 3" Width="auto" Click="Button_Click_1">Restart bat</Button>
-        <Button Grid.Row="2" Margin="7, 3, 7, 5" Width="auto" Click="Button_Click">Close</Button>
+        <Button Grid.Row="2" Margin="7, 5, 7, 3" Width="auto" Click="Button_Click_2">Run ctl</Button>
+        <Button Grid.Row="3" Margin="7, 3, 7, 5" Width="auto" Click="Button_Click">Close</Button>
         
     </Grid>
 
