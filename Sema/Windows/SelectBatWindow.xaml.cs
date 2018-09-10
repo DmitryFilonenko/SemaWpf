@@ -22,17 +22,17 @@ namespace Sema.Windows
     /// </summary>
     public partial class SelectBatWindow : Window
     {
-        public event EventHandler EventBatSelected;
+        public event EventHandler EventSelected;
 
         const int _cButtonHeight = 70;
         const int _cButtonWidth = 300;
 
-        bool _isSelected = false;
+       // bool _isSelected = false;
 
         public SelectBatWindow()
         {
             InitializeComponent();
-            this.Title = MediatorSema.UsingTable.TableName;
+           // this.Title = MediatorSema.UsingTable.TableName;
             CreateButtons();
         }
 
@@ -40,7 +40,7 @@ namespace Sema.Windows
         {
             int count = 0;
             
-            List<FileInfo> list = MediatorSema.BatFileList;
+            List<FileInfo> list = MediatorSema.CurrentFileType == FileType.Bat? MediatorSema.BatFileList : MediatorSema.CtlFileList;
 
             SetWindowSize(list.Count);
 
@@ -64,10 +64,10 @@ namespace Sema.Windows
 
         private void NewBtn_Click(object sender, RoutedEventArgs e)
         {
-            _isSelected = true;
-            if (EventBatSelected != null)
+           // _isSelected = true;
+            if (EventSelected != null)
             {
-               EventBatSelected(sender, EventArgs.Empty);
+               EventSelected(sender, EventArgs.Empty);
             }            
             this.Close();
         }
@@ -78,12 +78,12 @@ namespace Sema.Windows
             this.Width = _cButtonWidth + 70;
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if(!_isSelected)
-            {
-                e.Cancel = true;
-            }           
-        }
+        //private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        //{
+        //    if(!_isSelected)
+        //    {
+        //        e.Cancel = true;
+        //    }           
+        //}
     }
 }

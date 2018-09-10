@@ -12,6 +12,8 @@ using System.Windows.Controls;
 
 namespace Sema
 {
+    enum FileType { Bat, Ctl }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -21,6 +23,7 @@ namespace Sema
         bool _isOwnerChange = false;
         int _countToExit = 0;
         bool _isUpdate = false;
+        //FileType _fileType = FileType.Bat;
 
         public MainWindow()
         {
@@ -88,7 +91,8 @@ namespace Sema
                 if (isTableFree)
                 {
                     ManagerDb.InsertToTable(tableName);
-                    GetFiles(FileType.Bat);
+                    MediatorSema.CurrentFileType = FileType.Bat;
+                    GetFiles();
                 }
                 else
                 {
@@ -119,7 +123,8 @@ namespace Sema
                 MediatorSema.UsingTable = tableState;
                 ManagerDb.UpdateTableState();
                 MediatorSema.IsTableMy = true;
-                GetFiles(FileType.Bat);
+                MediatorSema.CurrentFileType = FileType.Bat;
+                GetFiles();
             }
             catch (Exception ex)
             {
@@ -132,24 +137,24 @@ namespace Sema
             this.Close();
         }
 
-        enum FileType { Bat, Ctl }
-
-        private void GetFiles(FileType fileType)
+        private void GetFiles()
         {
             try
             {
+                MediatorSema.BatFileList.Clear();
+                MediatorSema.CtlFileList.Clear();
                 DirectoryInfo di = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-                FileInfo[] files = fileType == FileType.Bat? di.GetFiles("*import*.bat") : di.GetFiles("*.ctl");
+                FileInfo[] files = MediatorSema.CurrentFileType == FileType.Bat? di.GetFiles("*import*.bat") : di.GetFiles("*.ctl");
                 if (files.Length == 1)
                 {
-                    if (fileType == FileType.Bat) StartBatFile(files[0].Name);
-                    else RunCtlFile(files[0].Name);
+                    if (MediatorSema.CurrentFileType == FileType.Bat) StartBatFile(files[0].Name);
+                    else RunTxtFile(files[0].Name);
                 }
                 else
                 {
                     foreach (var item in files)
                     {
-                        if (fileType == FileType.Bat) MediatorSema.BatFileList.Add(item);
+                        if (MediatorSema.CurrentFileType == FileType.Bat) MediatorSema.BatFileList.Add(item);
                         else MediatorSema.CtlFileList.Add(item);
                     }
                     RunSelectWindow();
@@ -161,13 +166,13 @@ namespace Sema
             }            
         }
 
-        private void RunCtlFile(string ctlName)
+        private void RunTxtFile(string fileName)
         {
             try
             {
                 Process proc = new Process();
                 proc.StartInfo.CreateNoWindow = false;
-                proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, ctlName);
+                proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, fileName);
                 proc.Start();
             }
             catch (Exception ex)
@@ -181,7 +186,7 @@ namespace Sema
             try
             {
                 SelectBatWindow win = new SelectBatWindow();
-                win.EventBatSelected += Win_EventBatSelected;
+                win.EventSelected += Win_EventSelected;
                 win.ShowDialog();
             }
             catch (Exception ex)
@@ -190,13 +195,13 @@ namespace Sema
             }            
         }
 
-        private void Win_EventBatSelected(object sender, EventArgs e)
+        private void Win_EventSelected(object sender, EventArgs e)
         {
             try
             {
                 Button btn = sender as Button;
                 string name = btn.Content.ToString();
-                string fullName = GetBatFileFullPath(name);
+                string fullName = GetFileFullPath(name);
                 StartBatFile(fullName);
             }
             catch (Exception ex)
@@ -205,7 +210,7 @@ namespace Sema
             }            
         }
 
-        private string GetBatFileFullPath(string name)
+        private string GetFileFullPath(string name)
         {
             string str = "";
             try
@@ -248,9 +253,12 @@ namespace Sema
         {
             try
             {
-                string ctlName = ManagerFs.GetCtlFromBat(MediatorSema.CurrentBat);
-                string logName = ManagerFs.GetLogName(ctlName);
-                RunLogFile(logName);
+                if (MediatorSema.CurrentFileType == FileType.Bat)
+                {
+                    string ctlName = ManagerFs.GetCtlFromBat(MediatorSema.CurrentBat);
+                    string logName = ManagerFs.GetLogName(ctlName);
+                    RunTxtFile(logName);
+                }                
             }
             catch (Exception ex)
             {
@@ -258,20 +266,6 @@ namespace Sema
             }            
         }
 
-        private void RunLogFile(string logName)
-        {
-            try
-            {
-                Process proc = new Process();
-                proc.StartInfo.CreateNoWindow = false;
-                proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, logName);
-                proc.Start();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "RunLogFile() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            }            
-        }
 
         private void Window_Activated(object sender, EventArgs e)
         {
@@ -377,6 +371,7 @@ namespace Sema
         {
             try
             {
+                MediatorSema.CurrentFileType = FileType.Bat;
                 if (MediatorSema.BatFileList.Count == 0)
                 {
                     StartBatFile(MediatorSema.CurrentBat);
@@ -396,14 +391,8 @@ namespace Sema
         {
             try
             {
-                if (MediatorSema.BatFileList.Count == 0)
-                {
-                    RunCtlFile(MediatorSema.CurrentCtl);
-                }
-                else
-                {
-                    RunSelectWindow();
-                }
+                MediatorSema.CurrentFileType = FileType.Ctl;
+                GetFiles();
             }
             catch (Exception ex)
             {
