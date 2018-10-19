@@ -31,7 +31,7 @@
         </DataGrid>
 
         <Button Grid.Row="1" Margin="7, 5, 7, 3" Width="auto" Click="Button_Click_1">Restart bat</Button>
-        <Button Grid.Row="2" Margin="7, 5, 7, 3" Width="auto" Click="Button_Click_2">Run ctl</Button>
+        <Button Grid.Row="2" Margin="7, 5, 7, 3" Width="auto" Click="Button_Click_2">Show ctl</Button>
         <Button Grid.Row="3" Margin="7, 3, 7, 5" Width="auto" Click="Button_Click">Close</Button>
         
     </Grid>

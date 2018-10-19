@@ -170,14 +170,19 @@ namespace Sema
         {
             try
             {
-                Process proc = new Process();
+                Process proc = new Process();              
                 proc.StartInfo.CreateNoWindow = false;
-                proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, fileName);
+                proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, fileName);                
                 proc.Start();
+
+                if (Path.GetExtension(fileName).ToLower() == ".log")
+                {
+                    MediatorSema.LogIdList.Add(proc.Id);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "RunCtlFile() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "RunTxtFile() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -265,8 +270,7 @@ namespace Sema
                 MessageBox.Show(ex.Message, "Proc_Exited() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }            
         }
-
-
+        
         private void Window_Activated(object sender, EventArgs e)
         {
             try
@@ -289,7 +293,7 @@ namespace Sema
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "RunLogFile() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Window_Activated() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }            
         }        
 
@@ -328,11 +332,35 @@ namespace Sema
             try
             {
                 SetTableFree();
+                CloseLogFiles();
                 this.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Button_Click() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CloseLogFiles()
+        {
+            try
+            {
+                Process[] processes = Process.GetProcesses();
+
+                foreach (var item in MediatorSema.LogIdList)
+                {
+                    foreach (var i in processes)
+                    {
+                        if (i.Id == item)
+                        {
+                            i.Kill();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "CloseLofFiles() Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

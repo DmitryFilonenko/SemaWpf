@@ -19,5 +19,7 @@ namespace Sema.Mediator
         public static List<FileInfo> CtlFileList { get { return _batFileList; } set { _batFileList = value; } }
         public static string CurrentCtl { get; set; }
         public static FileType CurrentFileType { get; set; }
+        static List<int> _logIdList = new List<int>();
+        public static List<int> LogIdList { get { return _logIdList; } set { _logIdList = value; } }
     }
 }
