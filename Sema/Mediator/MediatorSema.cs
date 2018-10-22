@@ -20,6 +20,6 @@ namespace Sema.Mediator
         public static string CurrentCtl { get; set; }
         public static FileType CurrentFileType { get; set; }
         static List<int> _logIdList = new List<int>();
-        public static List<int> LogIdList { get { return _logIdList; } set { _logIdList = value; } }
+        public static List<int> ProcIdList { get { return _logIdList; } set { _logIdList = value; } }
     }
 }

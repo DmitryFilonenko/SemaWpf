@@ -175,10 +175,7 @@ namespace Sema
                 proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, fileName);                
                 proc.Start();
 
-                if (Path.GetExtension(fileName).ToLower() == ".log")
-                {
-                    MediatorSema.LogIdList.Add(proc.Id);
-                }
+                MediatorSema.ProcIdList.Add(proc.Id);
             }
             catch (Exception ex)
             {
@@ -347,7 +344,7 @@ namespace Sema
             {
                 Process[] processes = Process.GetProcesses();
 
-                foreach (var item in MediatorSema.LogIdList)
+                foreach (var item in MediatorSema.ProcIdList)
                 {
                     foreach (var i in processes)
                     {
