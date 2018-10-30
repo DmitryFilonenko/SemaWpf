@@ -19,7 +19,7 @@ namespace Sema.FsLayer
             string tableName = "Не найден файл контрола";
             try
             {                
-                DirectoryInfo currentDir = new DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+                DirectoryInfo currentDir = GetCurrentDir();
                 FileInfo[] pathArr = currentDir.GetFiles("*.ctl");
                 if (pathArr.Length > 0)
                 {
@@ -33,6 +33,8 @@ namespace Sema.FsLayer
             }
             return tableName;
         }
+
+
 
         private static string GetTableName(string path)
         {
@@ -54,6 +56,19 @@ namespace Sema.FsLayer
             return str;
         }
         #endregion
+
+
+        public static DirectoryInfo GetCurrentDir()
+        {            
+            try
+            {
+                return new DirectoryInfo(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));                
+            }
+            catch (Exception)
+            {
+                throw;
+            }         
+        }
 
 
         public static DateTime GetCurrentFileDate()

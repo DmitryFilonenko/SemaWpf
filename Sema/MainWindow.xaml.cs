@@ -86,7 +86,8 @@ namespace Sema
                     return;
                 }
 
-                this.Title = tableName;
+                string curDir = ManagerFs.GetCurrentDir().FullName;
+                this.Title = curDir.Substring(curDir.IndexOf('\\') + 1) + "   (" + tableName + ")";
                 bool isTableFree = ManagerDb.IsTableFree(tableName);
                 if (isTableFree)
                 {
