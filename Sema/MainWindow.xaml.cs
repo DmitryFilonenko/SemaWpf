@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Deployment.Application;
+using System.Reflection;
 
 namespace Sema
 {
@@ -29,14 +31,26 @@ namespace Sema
         {
             InitializeComponent();
 
+            try
+            {
+                string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                this.Title += (" v." + version);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
+
+
             if (!isActualVersion())
             {
-                MessageBoxResult result = MessageBox.Show("Я устарел, обновитьcя?", "Старый Сема", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.OK)
-                {
+                //MessageBoxResult result = MessageBox.Show("Я устарел, обновитьcя?", "Старый Сема", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                //if (result == MessageBoxResult.OK)
+                //{
                     _isUpdate = true;
                     this.Close();
-                }
+                //}                
             }
             Subsribe();
         }
@@ -87,7 +101,8 @@ namespace Sema
                 }
 
                 string curDir = ManagerFs.GetCurrentDir().FullName;
-                this.Title = curDir.Substring(curDir.IndexOf('\\') + 1) + "   (" + tableName + ")";
+                string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                this.Title = curDir.Substring(curDir.IndexOf('\\') + 1) + "   (" + tableName + ")    v." + version;
                 bool isTableFree = ManagerDb.IsTableFree(tableName);
                 if (isTableFree)
                 {
@@ -145,6 +160,9 @@ namespace Sema
                 MediatorSema.BatFileList.Clear();
                 MediatorSema.CtlFileList.Clear();
                 DirectoryInfo di = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+
+                //MessageBox.Show(di.FullName);
+
                 FileInfo[] files = MediatorSema.CurrentFileType == FileType.Bat? di.GetFiles("*import*.bat") : di.GetFiles("*.ctl");
                 if (files.Length == 1)
                 {
@@ -155,6 +173,7 @@ namespace Sema
                 {
                     foreach (var item in files)
                     {
+                        MessageBox.Show(item.FullName);
                         if (MediatorSema.CurrentFileType == FileType.Bat) MediatorSema.BatFileList.Add(item);
                         else MediatorSema.CtlFileList.Add(item);
                     }
@@ -171,6 +190,8 @@ namespace Sema
         {
             try
             {
+                if (!fileName.Contains(":")) fileName = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), fileName);
+                //MessageBox.Show(fileName);
                 Process proc = new Process();              
                 proc.StartInfo.CreateNoWindow = false;
                 proc.StartInfo.FileName = System.IO.Path.Combine(MediatorSema.UsingTable.Path, fileName);                
@@ -236,6 +257,8 @@ namespace Sema
 
         void StartBatFile(string fileName)
         {
+            if (!fileName.Contains(":")) fileName = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), fileName);
+            //MessageBox.Show(fileName);
             try
             {
                 MediatorSema.CurrentBat = fileName;
@@ -400,7 +423,7 @@ namespace Sema
                 MediatorSema.CurrentFileType = FileType.Bat;
                 if (MediatorSema.BatFileList.Count == 0)
                 {
-                    StartBatFile(MediatorSema.CurrentBat);
+                    StartBatFile(MediatorSema.CurrentBat);//////////////////////////////////////////////////////////
                 }
                 else
                 {
