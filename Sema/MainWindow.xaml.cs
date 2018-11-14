@@ -173,7 +173,7 @@ namespace Sema
                 {
                     foreach (var item in files)
                     {
-                        MessageBox.Show(item.FullName);
+                        //MessageBox.Show(item.FullName);
                         if (MediatorSema.CurrentFileType == FileType.Bat) MediatorSema.BatFileList.Add(item);
                         else MediatorSema.CtlFileList.Add(item);
                     }
