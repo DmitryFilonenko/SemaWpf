@@ -123,13 +123,14 @@ namespace Sema.FsLayer
             string ctlName;
             try
             {
+                if (!currentBat.Contains(":")) currentBat = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), currentBat);
                 string str = File.ReadAllText(currentBat);
-                ctlName = str.Substring(str.LastIndexOf("=") + 1).Trim();
+                ctlName = str.Substring(str.LastIndexOf("=") + 1).Trim();                
             }
             catch (Exception)
             {
                 throw;
-            }            
+            }
             return ctlName;
         }
 

@@ -423,6 +423,7 @@ namespace Sema
                 MediatorSema.CurrentFileType = FileType.Bat;
                 if (MediatorSema.BatFileList.Count == 0)
                 {
+                    
                     StartBatFile(MediatorSema.CurrentBat);//////////////////////////////////////////////////////////
                 }
                 else
