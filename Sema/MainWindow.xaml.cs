@@ -353,7 +353,7 @@ namespace Sema
             try
             {
                 SetTableFree();
-                CloseLogFiles();
+                //CloseLogFiles();
                 this.Close();
             }
             catch (Exception ex)
@@ -404,6 +404,7 @@ namespace Sema
         {
             try
             {
+                CloseLogFiles();
                 if (_isUpdate)
                 {
                     ManagerFs.Update();
